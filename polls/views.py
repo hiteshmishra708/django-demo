@@ -7,6 +7,8 @@ from .models import Choice, Question
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 import xml.etree.ElementTree as ET
+from polls.models import Document
+from polls.forms import DocumentForm
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -82,3 +84,15 @@ def simple_upload(request):
 
 def isValidExtension(file):
     return True
+
+def model_form_upload(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return render(request, 'polls/model_form_upload.html')
+    else:
+        form = DocumentForm()
+    return render(request, 'polls/model_form_upload.html', {
+        'form': form
+    })
